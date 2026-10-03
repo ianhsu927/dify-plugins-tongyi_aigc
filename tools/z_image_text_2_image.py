@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import json
@@ -27,10 +28,7 @@ class ZImageText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = (
-                "https://dashscope.aliyuncs.com/api/v1/services/aigc/"
-                "multimodal-generation/generation"
-            )
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/multimodal-generation/generation")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

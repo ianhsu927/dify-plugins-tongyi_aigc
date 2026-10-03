@@ -23,6 +23,10 @@ parameters:
     form: form
     default: "wan2.7-r2v"
     options:
+      - value: "wan2.7-r2v-2026-06-12"
+        label:
+          en_US: "wan2.7-r2v-2026-06-12"
+          zh_Hans: "wan2.7-r2v-2026-06-12"
       - value: "wan2.7-r2v"
         label:
           en_US: "Wanxiang 2.7 Reference to Video"

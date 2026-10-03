@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import base64
@@ -23,7 +24,7 @@ class WanFirstImage2VideoTool(Tool):
         logger.info("Starting wan image-to-video task")
 
         try:
-            model = tool_parameters.get("model", "wan2.6-i2v").strip()
+            model = tool_parameters.get("model", "wan2.7-i2v").strip()
             is_wan27_i2v = model.startswith("wan2.7-i2v")
             api_key = self.runtime.credentials.get("api_key")
             if not api_key:
@@ -134,7 +135,7 @@ class WanFirstImage2VideoTool(Tool):
                 if tool_parameters.get("audio") is not None and not audio_url:
                     params["audio"] = tool_parameters.get("audio")
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/video-generation/video-synthesis")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

@@ -23,6 +23,10 @@ parameters:
     form: form
     default: "wan2.7-i2v"
     options:
+      - value: "wan2.7-i2v-2026-04-25"
+        label:
+          en_US: "wan2.7-i2v-2026-04-25"
+          zh_Hans: "wan2.7-i2v-2026-04-25"
       - value: "wan2.7-i2v"
         label:
           en_US: "Wanxiang 2.7 Image to Video"

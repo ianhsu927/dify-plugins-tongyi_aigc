@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import json
@@ -11,7 +12,11 @@ from dify_plugin.entities.tool import ToolInvokeMessage
 
 logger = logging.getLogger(__name__)
 
-QWEN_IMAGE_2_SERIES_MODELS = {
+QWEN_IMAGE_MODERN_MODELS = {
+    "qwen-image-3.0-pro",
+    "qwen-image-3.0",
+    "qwen-image-2.0-pro-2026-06-22",
+    "qwen-image-2.0-pro-2026-04-22",
     "qwen-image-2.0",
     "qwen-image-2.0-2026-03-03",
     "qwen-image-2.0-pro",
@@ -42,7 +47,7 @@ class QwenText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/multimodal-generation/generation")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -55,10 +60,7 @@ class QwenText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            if len(prompt) > 800:
-                prompt = prompt[:800]
-
-            model = tool_parameters.get("model", "qwen-image-2.0-pro")
+            model = tool_parameters.get("model", "qwen-image-3.0-pro")
             negative_prompt = tool_parameters.get("negative_prompt", "")
             if negative_prompt:
                 negative_prompt = negative_prompt[:500]
@@ -68,11 +70,11 @@ class QwenText2ImageTool(Tool):
             seed = tool_parameters.get("seed")
             n = tool_parameters.get("n")
 
-            if not size:
-                size = "2048*2048" if model in QWEN_IMAGE_2_SERIES_MODELS else "1664*928"
+            if not size and not model.startswith("qwen-image-3.0"):
+                size = "2048*2048" if model in QWEN_IMAGE_MODERN_MODELS else "1664*928"
 
-            if model in QWEN_IMAGE_2_SERIES_MODELS:
-                if not self._is_valid_qwen_image_2_size(size):
+            if model in QWEN_IMAGE_MODERN_MODELS:
+                if size and (not self._is_valid_qwen_image_2_size(size) or not 1 / 8 <= int(size.split("*")[0]) / int(size.split("*")[1]) <= 8):
                     msg = "❌ qwen-image-2.0系列的size总像素需在512*512到2048*2048之间"
                     logger.warning(msg)
                     yield self.create_text_message(msg)
@@ -111,16 +113,25 @@ class QwenText2ImageTool(Tool):
                 payload["parameters"]["negative_prompt"] = negative_prompt.strip()
             if prompt_extend is not None:
                 payload["parameters"]["prompt_extend"] = prompt_extend
+            if model in {"qwen-image-3.0-pro", "qwen-image-3.0"}:
+                mode = tool_parameters.get("prompt_extend_mode") or "direct"
+                if mode not in {"direct", "agent"}:
+                    yield self.create_text_message("❌ prompt_extend_mode 必须为 direct 或 agent")
+                    return
+                payload["parameters"]["prompt_extend_mode"] = mode
+                if tool_parameters.get("enable_thinking") is not None:
+                    payload["parameters"]["enable_thinking"] = bool(tool_parameters["enable_thinking"])
             if watermark is not None:
                 payload["parameters"]["watermark"] = watermark
-            payload["parameters"]["size"] = size
+            if size:
+                payload["parameters"]["size"] = size
             if n is not None:
                 try:
                     n_value = int(n)
                 except (TypeError, ValueError):
                     n_value = 1
 
-                if model in QWEN_IMAGE_2_SERIES_MODELS:
+                if model in QWEN_IMAGE_MODERN_MODELS:
                     if n_value < 1:
                         n_value = 1
                     if n_value > 6:
@@ -142,7 +153,7 @@ class QwenText2ImageTool(Tool):
                     api_url,
                     headers=headers,
                     json=payload,
-                    timeout=60,
+                    timeout=360,
                 )
             except requests.exceptions.Timeout:
                 msg = "❌ 请求超时，请稍后重试"
@@ -177,19 +188,16 @@ class QwenText2ImageTool(Tool):
 
             yield self.create_text_message("🎉 图像生成成功！")
 
-            for i, choice in enumerate(choices):
-                message = choice.get("message", {})
-                content = message.get("content", [])
-                image_url = ""
-                for item in content:
-                    if isinstance(item, dict) and "image" in item:
-                        image_url = item.get("image", "")
-                        break
-                if not image_url:
-                    yield self.create_text_message(f"❌ 未获取到第 {i + 1} 张图片的URL")
-                    return
-                yield self.create_image_message(image_url)
-                yield self.create_text_message(f"✅ 第 {i + 1} 张图片生成完成！")
+            image_index = 0
+            for choice in choices:
+                for item in choice.get("message", {}).get("content", []):
+                    if isinstance(item, dict) and item.get("image"):
+                        image_index += 1
+                        yield self.create_image_message(item["image"])
+                        yield self.create_text_message(f"✅ 第 {image_index} 张图片生成完成！")
+            if not image_index:
+                yield self.create_text_message("❌ API 响应中未返回图像URL")
+                return
 
             usage = resp_data.get("usage", {})
             if usage:

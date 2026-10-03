@@ -1,4 +1,4 @@
-version: 0.0.4
+version: 0.0.5
 type: plugin
 tags: 
   - productivity
@@ -10,8 +10,8 @@ label:
   en_US: "TongYi AIGC"
   zh_Hans: "通义AIGC"
 description:
-  en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (HappyHorse1.1, wan2.7, qwen-image2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
-  zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(HappyHorse1.1、wan2.7、qwen-image2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
+  en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (HappyHorse1.1, wan3.0, wan2.7, qwen-image3.0/2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
+  zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(HappyHorse1.1、wan3.0、wan2.7、qwen-image3.0/2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
 icon: icon.svg
 resource:
   memory: 268435456
@@ -37,7 +37,7 @@ plugins:
   tools:
     - provider/tongyi_aigc.yaml
 meta:
-  version: 0.0.4
+  version: 0.0.5
   arch:
     - amd64
     - arm64
@@ -48,5 +48,5 @@ meta:
   minimum_dify_version: null
 created_at: 2026-02-15T11:19:55.825854+08:00
 privacy: PRIVACY.md
-repo: https://github.com/sawyer-shi/dify-plugins-tongyi_aigc
+repo: https://github.com/ianhsu927/dify-plugins-tongyi_aigc
 verified: false

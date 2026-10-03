@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import base64
@@ -28,14 +29,14 @@ class WanText2VideoTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/video-generation/video-synthesis")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
                 "X-DashScope-Async": "enable",
             }
 
-            model = tool_parameters.get("model", "wan2.6-t2v").strip()
+            model = tool_parameters.get("model", "wan2.7-t2v").strip()
             prompt = tool_parameters.get("prompt", "").strip()
             if not prompt:
                 msg = "❌ 请输入提示词"

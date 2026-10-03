@@ -1,0 +1,188 @@
+identity:
+  name: wan_video
+  author: sawyer-shi
+  label:
+    en_US: wan_video
+    zh_Hans: 万相3.0-全能视频生成
+description:
+  human:
+    en_US: 万相3.0-全能视频生成
+    zh_Hans: 万相3.0-全能视频生成
+  llm: Submit async video generation/editing. Query task_id using wan_video_query.
+parameters:
+- name: model
+  type: select
+  required: false
+  label:
+    en_US: model
+    zh_Hans: 模型
+  human_description:
+    en_US: Model ID
+    zh_Hans: Model ID
+  llm_description: Model ID
+  form: form
+  default: wan3.0-video
+  options:
+  - value: wan3.0-video
+    label:
+      en_US: wan3.0-video
+      zh_Hans: wan3.0-video
+  - value: wan3.0-video-prime
+    label:
+      en_US: wan3.0-video-prime
+      zh_Hans: wan3.0-video-prime
+- name: prompt
+  type: string
+  required: false
+  label:
+    en_US: prompt
+    zh_Hans: 提示词
+  human_description:
+    en_US: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+    zh_Hans: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+  llm_description: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+  form: llm
+- name: media
+  type: string
+  required: false
+  label:
+    en_US: media
+    zh_Hans: 素材 JSON
+  human_description:
+    en_US: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+      first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+      type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+    zh_Hans: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+      first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+      type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+  llm_description: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+    first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+    type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+  form: llm
+- name: resolution
+  type: select
+  required: false
+  label:
+    en_US: resolution
+    zh_Hans: 分辨率
+  human_description:
+    en_US: 视频分辨率档位
+    zh_Hans: 视频分辨率档位
+  llm_description: 视频分辨率档位
+  form: form
+  default: 1080P
+  options:
+  - value: 480P
+    label:
+      en_US: 480P
+      zh_Hans: 480P
+  - value: 720P
+    label:
+      en_US: 720P
+      zh_Hans: 720P
+  - value: 1080P
+    label:
+      en_US: 1080P
+      zh_Hans: 1080P
+- name: duration
+  type: number
+  required: false
+  label:
+    en_US: duration
+    zh_Hans: 时长（秒）
+  human_description:
+    en_US: 2–30秒；-1为智能时长；含视频时输入+输出总长≤30秒。
+    zh_Hans: 2–30秒；-1为智能时长；含视频时输入+输出总长≤30秒。
+  llm_description: 2–30秒；-1为智能时长；含视频时输入+输出总长≤30秒。
+  form: form
+- name: prompt_extend
+  type: boolean
+  required: false
+  label:
+    en_US: prompt_extend
+    zh_Hans: 提示词改写
+  human_description:
+    en_US: 文档/网页生视频必须开启。
+    zh_Hans: 文档/网页生视频必须开启。
+  llm_description: 文档/网页生视频必须开启。
+  form: form
+  default: true
+- name: watermark
+  type: boolean
+  required: false
+  label:
+    en_US: watermark
+    zh_Hans: 水印
+  human_description:
+    en_US: 是否添加水印
+    zh_Hans: 是否添加水印
+  llm_description: 是否添加水印
+  form: form
+  default: true
+- name: seed
+  type: number
+  required: false
+  label:
+    en_US: seed
+    zh_Hans: 随机种子
+  human_description:
+    en_US: 0–2147483647；Wan3 额外支持 -1
+    zh_Hans: 0–2147483647；Wan3 额外支持 -1
+  llm_description: 0–2147483647；Wan3 额外支持 -1
+  form: form
+- name: ratio
+  type: select
+  required: false
+  label:
+    en_US: ratio
+    zh_Hans: 宽高比
+  human_description:
+    en_US: 视频延长使用 adaptive
+    zh_Hans: 视频延长使用 adaptive
+  llm_description: 视频延长使用 adaptive
+  form: form
+  default: adaptive
+  options:
+  - value: adaptive
+    label:
+      en_US: adaptive
+      zh_Hans: adaptive
+  - value: '21:9'
+    label:
+      en_US: '21:9'
+      zh_Hans: '21:9'
+  - value: '16:9'
+    label:
+      en_US: '16:9'
+      zh_Hans: '16:9'
+  - value: '4:3'
+    label:
+      en_US: '4:3'
+      zh_Hans: '4:3'
+  - value: '1:1'
+    label:
+      en_US: '1:1'
+      zh_Hans: '1:1'
+  - value: '3:4'
+    label:
+      en_US: '3:4'
+      zh_Hans: '3:4'
+  - value: '9:16'
+    label:
+      en_US: '9:16'
+      zh_Hans: '9:16'
+- name: audio
+  type: boolean
+  required: false
+  label:
+    en_US: audio
+    zh_Hans: 生成音频
+  human_description:
+    en_US: 输出是否包含声音
+    zh_Hans: 输出是否包含声音
+  llm_description: 输出是否包含声音
+  form: form
+  default: true
+extra:
+  python:
+    source: tools/wan_video.py

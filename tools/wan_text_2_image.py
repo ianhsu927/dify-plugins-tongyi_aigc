@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import json
@@ -39,10 +40,7 @@ class WanText2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = (
-                "https://dashscope.aliyuncs.com/api/v1/services/aigc/"
-                "multimodal-generation/generation"
-            )
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/multimodal-generation/generation")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -88,7 +86,7 @@ class WanText2ImageTool(Tool):
                     else:
                         msg = "❌ wan2.7 文生图支持 1K/2K/4K，或符合范围的宽*高"
                 else:
-                    msg = "❌ wan2.6-t2i 仅支持固定尺寸：1280*1280/1104*1472/1472*1104/960*1696/1696*960"
+                    msg = "❌ wan2.6-t2i 总像素需在1280*1280至1440*1440之间，宽高比需在1:4至4:1之间"
                 logger.warning(msg)
                 yield self.create_text_message(msg)
                 return
@@ -161,7 +159,7 @@ class WanText2ImageTool(Tool):
                     api_url,
                     headers=headers,
                     json=payload,
-                    timeout=60,
+                    timeout=360,
                 )
             except requests.exceptions.Timeout:
                 msg = "❌ 请求超时，请稍后重试"
@@ -234,7 +232,7 @@ class WanText2ImageTool(Tool):
     @staticmethod
     def _is_valid_size(model: str, size: str, enable_sequential: bool) -> bool:
         if model in WAN_26_MODELS:
-            return size in WAN_26_SIZE_OPTIONS
+            return WanText2ImageTool._is_valid_custom_size(size, min_pixels=1280 * 1280, max_pixels=1440 * 1440) and 1 / 4 <= int(size.split("*")[0]) / int(size.split("*")[1]) <= 4
 
         if model == "wan2.7-image":
             if size in {"1K", "2K"}:

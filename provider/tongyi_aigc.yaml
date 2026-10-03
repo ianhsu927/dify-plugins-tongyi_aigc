@@ -5,8 +5,8 @@ identity:
     en_US: "TongYi AIGC"
     zh_Hans: "通义AIGC"
   description:
-    en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (HappyHorse1.1, wan2.7, qwen-image2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
-    zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(HappyHorse1.1、wan2.7、qwen-image2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
+    en_US: 'TongYi AIGC: Supports full-featured image and video generation using the latest Alibaba Tongyi models (HappyHorse1.1, wan3.0, wan2.7, qwen-image3.0/2.0, Z-image, wan2.6,wan2.5, wan2.2, and wanx2.1).'
+    zh_Hans: '通义AIGC：支持全套图片+视频的生成、编辑等操作，使用最新的阿里通义模型(HappyHorse1.1、wan3.0、wan2.7、qwen-image3.0/2.0、Z-Image以及wan2.6、wan2.5、wan2.2和wanx2.1)。'
   icon: "icon.svg"
 credentials_for_provider:
   api_key:
@@ -22,7 +22,21 @@ credentials_for_provider:
     required: true
     type: secret-input
     url: https://dashscope.console.aliyun.com/apiKey
+  api_base_url:
+    type: text-input
+    required: false
+    label:
+      en_US: API Base URL
+      zh_Hans: 百炼地域/业务空间域名
+    placeholder:
+      en_US: https://dashscope.aliyuncs.com
+      zh_Hans: https://dashscope.aliyuncs.com
+    help:
+      en_US: HTTPS host only; use the same region/workspace as your API key.
+      zh_Hans: 仅填HTTPS域名（不含路径）；需与API Key同地域/业务空间。Wan3请填写官方文档提供的业务空间域名。
 tools:
+  - tools/wan_video.yaml
+  - tools/wan_video_edit.yaml
   - tools/z_image_text_2_image.yaml
   - tools/qwen_text_2_image.yaml
   - tools/qwen_image_2_image.yaml

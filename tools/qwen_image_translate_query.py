@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import json
@@ -30,7 +31,7 @@ class QwenImageTranslateQueryTool(Tool):
                 yield self.create_text_message("❌ API密钥未配置")
                 return
 
-            api_url = f"https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}"
+            api_url = build_api_url(self.runtime.credentials, f"/api/v1/tasks/{task_id}")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",

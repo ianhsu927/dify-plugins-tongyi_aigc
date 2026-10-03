@@ -1,0 +1,159 @@
+identity:
+  name: wan_video_edit
+  author: sawyer-shi
+  label:
+    en_US: wan_video_edit
+    zh_Hans: 万相-视频编辑
+description:
+  human:
+    en_US: 万相-视频编辑
+    zh_Hans: 万相-视频编辑
+  llm: Submit async video generation/editing. Query task_id using wan_video_query.
+parameters:
+- name: model
+  type: select
+  required: false
+  label:
+    en_US: model
+    zh_Hans: 模型
+  human_description:
+    en_US: Model ID
+    zh_Hans: Model ID
+  llm_description: Model ID
+  form: form
+  default: wan2.7-videoedit
+  options:
+  - value: wan2.7-videoedit
+    label:
+      en_US: wan2.7-videoedit
+      zh_Hans: wan2.7-videoedit
+- name: prompt
+  type: string
+  required: false
+  label:
+    en_US: prompt
+    zh_Hans: 提示词
+  human_description:
+    en_US: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+    zh_Hans: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+  llm_description: 编辑/生成指令；Wan3 最多20000字符，视频编辑最多5000字符。
+  form: llm
+- name: media
+  type: string
+  required: false
+  label:
+    en_US: media
+    zh_Hans: 素材 JSON
+  human_description:
+    en_US: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+      first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+      type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+    zh_Hans: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+      first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+      type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+  llm_description: JSON数组，例如 [{"type":"reference_image","url":"https://example.com/image.png"}]。Wan3支持
+    first_frame/last_frame/reference_image/reference_video/reference_audio/file/link；视频编辑需要
+    type=video，可附最多4张 reference_image。参考视频和音频各总长≤15秒；含视频时输入+输出总长≤30秒。
+  form: llm
+- name: resolution
+  type: select
+  required: false
+  label:
+    en_US: resolution
+    zh_Hans: 分辨率
+  human_description:
+    en_US: 视频分辨率档位
+    zh_Hans: 视频分辨率档位
+  llm_description: 视频分辨率档位
+  form: form
+  default: 1080P
+  options:
+  - value: 720P
+    label:
+      en_US: 720P
+      zh_Hans: 720P
+  - value: 1080P
+    label:
+      en_US: 1080P
+      zh_Hans: 1080P
+- name: duration
+  type: number
+  required: false
+  label:
+    en_US: duration
+    zh_Hans: 时长（秒）
+  human_description:
+    en_US: 2–10秒
+    zh_Hans: 2–10秒
+  llm_description: 2–10秒
+  form: form
+- name: prompt_extend
+  type: boolean
+  required: false
+  label:
+    en_US: prompt_extend
+    zh_Hans: 提示词改写
+  human_description:
+    en_US: 文档/网页生视频必须开启。
+    zh_Hans: 文档/网页生视频必须开启。
+  llm_description: 文档/网页生视频必须开启。
+  form: form
+  default: true
+- name: watermark
+  type: boolean
+  required: false
+  label:
+    en_US: watermark
+    zh_Hans: 水印
+  human_description:
+    en_US: 是否添加水印
+    zh_Hans: 是否添加水印
+  llm_description: 是否添加水印
+  form: form
+  default: true
+- name: seed
+  type: number
+  required: false
+  label:
+    en_US: seed
+    zh_Hans: 随机种子
+  human_description:
+    en_US: 0–2147483647；Wan3 额外支持 -1
+    zh_Hans: 0–2147483647；Wan3 额外支持 -1
+  llm_description: 0–2147483647；Wan3 额外支持 -1
+  form: form
+- name: negative_prompt
+  type: string
+  required: false
+  label:
+    en_US: negative_prompt
+    zh_Hans: 反向提示词
+  human_description:
+    en_US: 最多500字符
+    zh_Hans: 最多500字符
+  llm_description: 最多500字符
+  form: llm
+- name: audio_setting
+  type: select
+  required: false
+  label:
+    en_US: audio_setting
+    zh_Hans: 音频处理
+  human_description:
+    en_US: auto 自动处理；origin 保留原声
+    zh_Hans: auto 自动处理；origin 保留原声
+  llm_description: auto 自动处理；origin 保留原声
+  form: form
+  default: auto
+  options:
+  - value: auto
+    label:
+      en_US: auto
+      zh_Hans: auto
+  - value: origin
+    label:
+      en_US: origin
+      zh_Hans: origin
+extra:
+  python:
+    source: tools/wan_video.py
