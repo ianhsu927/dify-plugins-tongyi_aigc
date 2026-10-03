@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import json
@@ -87,7 +88,7 @@ class QwenImageTranslateTool(Tool):
                     skip_img_segment
                 )
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/image2image/image-synthesis"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/image2image/image-synthesis")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -161,11 +162,10 @@ class QwenImageTranslateTool(Tool):
             logger.exception(error_msg)
             yield self.create_text_message(error_msg)
 
-    @staticmethod
-    def _check_task_status(task_id: str, api_key: str) -> dict[str, Any] | None:
+    def _check_task_status(self, task_id: str, api_key: str) -> dict[str, Any] | None:
         max_attempts = 30
         attempt = 0
-        api_url = f"https://dashscope.aliyuncs.com/api/v1/tasks/{task_id}"
+        api_url = build_api_url(self.runtime.credentials, f"/api/v1/tasks/{task_id}")
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",

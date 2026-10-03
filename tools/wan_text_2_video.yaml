@@ -21,8 +21,16 @@ parameters:
       zh_Hans: "用于文生视频的AI模型"
     llm_description: "AI model for text-to-video generation"
     form: form
-    default: "wan2.6-t2v"
+    default: "wan2.7-t2v"
     options:
+      - value: "wan2.7-t2v-2026-06-12"
+        label:
+          en_US: "wan2.7-t2v-2026-06-12"
+          zh_Hans: "wan2.7-t2v-2026-06-12"
+      - value: "wan2.7-t2v-2026-04-25"
+        label:
+          en_US: "wan2.7-t2v-2026-04-25"
+          zh_Hans: "wan2.7-t2v-2026-04-25"
       - value: "wan2.7-t2v"
         label:
           en_US: "Wanxiang 2.7 Text to Video"

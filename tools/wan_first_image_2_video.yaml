@@ -21,8 +21,16 @@ parameters:
       zh_Hans: "用于视频生成的AI模型"
     llm_description: "AI model for video generation"
     form: form
-    default: "wan2.6-i2v"
+    default: "wan2.7-i2v"
     options:
+      - value: "wan2.7-i2v-2026-04-25"
+        label:
+          en_US: "wan2.7-i2v-2026-04-25"
+          zh_Hans: "wan2.7-i2v-2026-04-25"
+      - value: "wan2.6-i2v-flash"
+        label:
+          en_US: "wan2.6-i2v-flash"
+          zh_Hans: "wan2.6-i2v-flash"
       - value: "wan2.7-i2v"
         label:
           en_US: "Wanxiang 2.7 Image to Video"

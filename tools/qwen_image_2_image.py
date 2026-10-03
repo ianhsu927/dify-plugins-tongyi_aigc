@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import base64
@@ -14,7 +15,11 @@ from PIL import Image
 
 logger = logging.getLogger(__name__)
 
-QWEN_IMAGE_2_SERIES_MODELS = {
+QWEN_IMAGE_MODERN_MODELS = {
+    "qwen-image-3.0-pro",
+    "qwen-image-3.0",
+    "qwen-image-2.0-pro-2026-06-22",
+    "qwen-image-2.0-pro-2026-04-22",
     "qwen-image-2.0",
     "qwen-image-2.0-2026-03-03",
     "qwen-image-2.0-pro",
@@ -45,7 +50,7 @@ class QwenImage2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/multimodal-generation/generation"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/multimodal-generation/generation")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
@@ -57,9 +62,6 @@ class QwenImage2ImageTool(Tool):
                 logger.warning(msg)
                 yield self.create_text_message(msg)
                 return
-
-            if len(prompt) > 800:
-                prompt = prompt[:800]
 
             images = tool_parameters.get("images", [])
             if not images or not isinstance(images, list):
@@ -73,7 +75,7 @@ class QwenImage2ImageTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            model = tool_parameters.get("model", "qwen-image-2.0-pro")
+            model = tool_parameters.get("model", "qwen-image-3.0-pro")
             negative_prompt = tool_parameters.get("negative_prompt", "")
             if negative_prompt:
                 negative_prompt = negative_prompt[:500]
@@ -84,7 +86,7 @@ class QwenImage2ImageTool(Tool):
             n = tool_parameters.get("n")
 
             if size and not self._is_size_valid_for_model(model, size):
-                if model in QWEN_IMAGE_2_SERIES_MODELS:
+                if model in QWEN_IMAGE_MODERN_MODELS:
                     msg = "❌ qwen-image-2.0系列size总像素需在512*512到2048*2048之间"
                 elif model in QWEN_IMAGE_EDIT_MAX_PLUS_MODELS:
                     msg = "❌ qwen-image-edit-max/plus系列size宽高均需在512到2048之间"
@@ -141,6 +143,17 @@ class QwenImage2ImageTool(Tool):
                 payload["parameters"]["size"] = size
             if prompt_extend is not None and model != "qwen-image-edit":
                 payload["parameters"]["prompt_extend"] = bool(prompt_extend)
+            if model in {"qwen-image-3.0-pro", "qwen-image-3.0"}:
+                mode = tool_parameters.get("prompt_extend_mode") or "direct"
+                if mode not in {"direct", "agent"}:
+                    yield self.create_text_message("❌ prompt_extend_mode 必须为 direct 或 agent")
+                    return
+                if mode == "agent":
+                    yield self.create_text_message("❌ 图生图仅支持 direct 提示词改写")
+                    return
+                payload["parameters"]["prompt_extend_mode"] = mode
+                if tool_parameters.get("enable_thinking") is not None:
+                    payload["parameters"]["enable_thinking"] = bool(tool_parameters["enable_thinking"])
             if watermark is not None:
                 payload["parameters"]["watermark"] = bool(watermark)
             if seed is not None:
@@ -307,9 +320,9 @@ class QwenImage2ImageTool(Tool):
         if width <= 0 or height <= 0:
             return False
 
-        if model in QWEN_IMAGE_2_SERIES_MODELS:
+        if model in QWEN_IMAGE_MODERN_MODELS:
             pixels = width * height
-            return 512 * 512 <= pixels <= 2048 * 2048
+            return 512 * 512 <= pixels <= 2048 * 2048 and 1 / 8 <= width / height <= 8
 
         if model in QWEN_IMAGE_EDIT_MAX_PLUS_MODELS:
             return 512 <= width <= 2048 and 512 <= height <= 2048

@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 from typing import Any
@@ -15,14 +16,14 @@ class TongyiAigcProvider(ToolProvider):
                 raise ToolProviderCredentialValidationError("Tongyi API key is required")
             if len(api_key) < 10:
                 raise ToolProviderCredentialValidationError("Tongyi API key length is invalid")
-            self._test_tongyi_connection(api_key)
+            self._test_tongyi_connection(api_key, credentials)
         except Exception as e:
             raise ToolProviderCredentialValidationError(
                 f"Tongyi API credential validation failed: {str(e)}"
             )
 
-    def _test_tongyi_connection(self, api_key: str) -> None:
-        url = "https://dashscope.aliyuncs.com/compatible-mode/v1/chat/completions"
+    def _test_tongyi_connection(self, api_key: str, credentials: dict[str, Any]) -> None:
+        url = build_api_url(credentials, "/compatible-mode/v1/chat/completions")
         headers = {
             "Content-Type": "application/json",
             "Authorization": f"Bearer {api_key}",

@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 # author: sawyer-shi
 
 import base64
@@ -33,10 +34,7 @@ class WanVideoContinueTool(Tool):
                 yield self.create_text_message("ℹ️ 视频续写仅支持 wan2.7-i2v，已自动回退为 wan2.7-i2v。")
                 model = "wan2.7-i2v"
 
-            api_url = (
-                "https://dashscope.aliyuncs.com/api/v1/services/aigc/"
-                "video-generation/video-synthesis"
-            )
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/video-generation/video-synthesis")
 
             first_clip_input = self._pick_first_file(tool_parameters.get("first_clip_input"))
             first_clip_url = tool_parameters.get("first_clip_url", "")

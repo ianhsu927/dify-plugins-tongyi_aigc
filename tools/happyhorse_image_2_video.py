@@ -1,3 +1,4 @@
+from provider.endpoints import api_url as build_api_url
 import base64
 import json
 import logging
@@ -28,14 +29,14 @@ class HappyHorseImage2VideoTool(Tool):
                 yield self.create_text_message(msg)
                 return
 
-            api_url = "https://dashscope.aliyuncs.com/api/v1/services/aigc/video-generation/video-synthesis"
+            api_url = build_api_url(self.runtime.credentials, "/api/v1/services/aigc/video-generation/video-synthesis")
             headers = {
                 "Authorization": f"Bearer {api_key}",
                 "Content-Type": "application/json",
                 "X-DashScope-Async": "enable",
             }
 
-            model = str(tool_parameters.get("model") or "happyhorse-1.0-i2v").strip()
+            model = str(tool_parameters.get("model") or "happyhorse-1.1-i2v").strip()
             
             # Extract and process image
             image_obj = tool_parameters.get("image_input")

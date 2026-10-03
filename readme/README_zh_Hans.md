@@ -1,5 +1,28 @@
 # 通义 AIGC
 
+## 0.0.5 — 百炼最新 AIGC 模型（2026-10-03）
+
+- 新增 `qwen-image-3.0-pro` / `qwen-image-3.0` 文生图与图像编辑，支持 `prompt_extend_mode` 和 `enable_thinking`。图生图只支持 direct；agent 仅用于文生图。不再以800字符截断提示词，Token限制由百炼处理。
+- 补齐 Qwen 2.0 Pro 的 2026-06-22 / 2026-04-22 快照，以及 Wan 2.7 视频快照、Wan 2.6 i2v-flash。
+- 新增 `wan_video`：`wan3.0-video` / `wan3.0-video-prime`，支持文生视频、首尾帧、多模态参考、文档/网页、编辑和延长视频。480P/720P/1080P，2–30秒或 -1 智能时长。
+- 新增 `wan_video_edit`：`wan2.7-videoedit`，指令编辑及最多4张参考图。新视频工具提交异步任务，将返回的 task_id 传给 `wan_video_query` 查询。
+- 新增可选凭据 `api_base_url`，所有提交与查询共用此地域/业务空间域名。默认北京旧域名兼容已有配置；Wan3 请填写实际业务空间域名，例如 `https://{WorkspaceId}.cn-beijing.maas.aliyuncs.com`。模型、API Key 与域名必须属于同一地域。
+- Qwen 默认升级为3.0 Pro；Wan视频默认升级为2.7；HappyHorse Python 默认值与1.1配置对齐。已有工作流显式选择的旧模型保持可用。
+
+### Wan3 使用示例
+
+文生视频：选择 `wan_video`，填提示词，`media` 留空。首尾帧：填 `media` 为 `[{"type":"first_frame","url":"https://example.com/start.png"},{"type":"last_frame","url":"https://example.com/end.png"}]`。参考生视频：使用 `reference_image`、`reference_video`、`reference_audio` 类型，可组合。编辑/延长：使用 `reference_video` 并在提示词说明意图；延长时 ratio 使用 adaptive。
+
+素材限制：首尾帧不能与参考素材混用；file/link 二选一且必须开启提示词改写；参考图片最多10张，参考视频/音频各最多5个且各总长不超过15秒；输入视频总长+输出视频时长不得超过30秒。URL素材的格式、大小和时长由服务端校验。
+
+### 官方协议参考
+
+- [千问图像3.0](https://help.aliyun.com/zh/model-studio/qwen-image-generation-and-editing-api-reference)
+- [万相视频3.0](https://help.aliyun.com/zh/model-studio/wan3-video-generation-api-reference)
+- [万相视频编辑](https://help.aliyun.com/zh/model-studio/wan-video-editing-api-reference)
+
+验证：`python -m unittest discover -s tests -v`。测试模拟HTTP响应，验证真实工具的请求与返回消息，不产生付费调用。实际生成需自行配置百炼凭据及开通对应地域模型。
+
 一个强大的 Dify 插件，使用阿里云通义最新的万相、通义千问和 Z-Image 模型提供全面的 AI 图像和视频生成功能。支持文生图、文生视频、图生图、图生视频、图像翻译等多种生成模式，具有专业级质量和灵活的配置选项。
 
 ## 版本信息
@@ -376,7 +399,7 @@ AI 驱动的 OCR 和翻译功能，翻译图像中的文字。
 #### 13. HappyHorse 文生视频
 使用 HappyHorse 模型从文本生成视频。
 - **参数**:
-  - `model`: 模型版本（默认：happyhorse-1.0-t2v）
+  - `model`: 模型版本（默认：happyhorse-1.1-t2v）
   - `prompt`: 视频生成的文本描述（必需）
   - `resolution`: 视频分辨率 - 720P 或 1080P（默认：1080P）
   - `ratio`: 宽高比 - 16:9, 9:16, 1:1, 4:3, 3:4（默认：16:9）
@@ -387,7 +410,7 @@ AI 驱动的 OCR 和翻译功能，翻译图像中的文字。
 #### 14. HappyHorse 图生视频-基于首帧
 使用 HappyHorse 模型从图像生成视频。
 - **参数**:
-  - `model`: 模型版本（默认：happyhorse-1.0-i2v）
+  - `model`: 模型版本（默认：happyhorse-1.1-i2v）
   - `prompt`: 视频生成的文本描述（可选）
   - `image_input`: 首帧图片文件（可选）
   - `resolution`: 视频分辨率 - 720P 或 1080P（默认：1080P）
@@ -398,7 +421,7 @@ AI 驱动的 OCR 和翻译功能，翻译图像中的文字。
 #### 15. HappyHorse 参考生视频
 使用 HappyHorse 模型从多张参考图生成视频。
 - **参数**:
-  - `model`: 模型版本（默认：happyhorse-1.0-r2v）
+  - `model`: 模型版本（默认：happyhorse-1.1-r2v）
   - `prompt`: 视频生成的文本描述（必需）
   - `files`: 参考图片文件（1-9张，必需）
   - `resolution`: 视频分辨率 - 720P 或 1080P（默认：1080P）

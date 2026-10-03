@@ -82,7 +82,7 @@ parameters:
       zh_Hans: 出图数量
     human_description:
       en_US: "For qwen-image-2.0 series: 1-6 images. Other models are fixed to 1"
-      zh_Hans: "qwen-image-2.0系列支持1-6张，其他模型固定为1"
+      zh_Hans: "qwen-image-2.0/3.0系列支持1-6张，其他模型固定为1"
     llm_description: "Image count. qwen-image-2.0 series supports 1-6; other models are fixed to 1"
     form: form
     default: 1
@@ -142,8 +142,24 @@ parameters:
       zh_Hans: "选择要使用的Qwen模型版本"
     llm_description: "Choose the Qwen model version"
     form: form
-    default: "qwen-image-2.0-pro"
+    default: "qwen-image-3.0-pro"
     options:
+      - value: "qwen-image-3.0-pro"
+        label:
+          en_US: "qwen-image-3.0-pro"
+          zh_Hans: "qwen-image-3.0-pro"
+      - value: "qwen-image-3.0"
+        label:
+          en_US: "qwen-image-3.0"
+          zh_Hans: "qwen-image-3.0"
+      - value: "qwen-image-2.0-pro-2026-06-22"
+        label:
+          en_US: "qwen-image-2.0-pro-2026-06-22"
+          zh_Hans: "qwen-image-2.0-pro-2026-06-22"
+      - value: "qwen-image-2.0-pro-2026-04-22"
+        label:
+          en_US: "qwen-image-2.0-pro-2026-04-22"
+          zh_Hans: "qwen-image-2.0-pro-2026-04-22"
       - value: "qwen-image-2.0-pro"
         label:
           en_US: "Qwen Image 2.0 Pro"
@@ -180,6 +196,39 @@ parameters:
         label:
           en_US: "Qwen Image"
           zh_Hans: "Qwen Image"
+  - name: prompt_extend_mode
+    type: select
+    required: false
+    label:
+      en_US: prompt_extend_mode
+      zh_Hans: "提示词改写方式（3.0；agent 仅支持文生图）"
+    human_description:
+      en_US: "prompt_extend_mode for Qwen Image 3.0"
+      zh_Hans: "提示词改写方式（3.0；agent 仅支持文生图）"
+    llm_description: "prompt_extend_mode for Qwen Image 3.0"
+    form: form
+    default: direct
+    options:
+      - value: direct
+        label:
+          en_US: Direct
+          zh_Hans: 直接增强
+      - value: agent
+        label:
+          en_US: Agent
+          zh_Hans: 智能体增强
+  - name: enable_thinking
+    type: boolean
+    required: false
+    label:
+      en_US: enable_thinking
+      zh_Hans: "思考模式（Qwen-Image 3.0，需开启提示词改写）"
+    human_description:
+      en_US: "enable_thinking for Qwen Image 3.0"
+      zh_Hans: "思考模式（Qwen-Image 3.0，需开启提示词改写）"
+    llm_description: "enable_thinking for Qwen Image 3.0"
+    form: form
+    default: true
 extra:
   python:
     source: tools/qwen_text_2_image.py
