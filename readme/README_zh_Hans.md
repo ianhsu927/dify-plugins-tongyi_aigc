@@ -27,12 +27,13 @@
 
 ## 版本信息
 
-- **当前版本**: v0.0.4
-- **发布日期**: 2026-07-05
+- **当前版本**: v0.0.5
+- **合并日期**: 2026-10-03
 - **兼容性**: Dify 插件框架
 - **Python 版本**: 3.12
 
 ### 版本历史
+- **v0.0.5** (2026-10-03): Qwen-Image 3.0, Wan 3.0, Wan video editing and regional/workspace API host configuration.
 - **v0.0.4** (2026-07-05):
   - 新增 **HappyHorse 1.1** 模型应用于所有 HappyHorse 视频生成工具
   - 默认模型更新为 happyhorse-1.1 系列
@@ -240,15 +241,11 @@ AI 驱动的 OCR 和翻译功能，翻译图像中的文字。
 
 ## 安装与配置
 
-1. 安装所需的依赖项：
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. 在插件设置中配置阿里云 API 凭证：
-   - **API Key**: 您的阿里云 DashScope API 密钥
-
-3. 在您的 Dify 环境中安装插件
+1. 从可信构建获取 `tongyi_aigc-0.0.5.difypkg`；自行打包见[验收指南](../docs/ACCEPTANCE.md)。在 Dify 的插件页选择从本地文件安装。Dify 的插件运行环境负责安装依赖；在宿主机运行 pip 不能替代插件安装。
+2. 记录 Dify、plugin-daemon 版本与架构。manifest 使用 Python 3.12，支持 amd64/arm64；minimum_dify_version 未声明，不能据此认为所有 Dify 版本都兼容。签名验证失败时由管理员使用实例允许的可信签名方式安装。
+3. 安装完成后配置 **API Key** 与可选 **api_base_url**（仅 HTTPS 域名，不含路径）。空值使用 `https://dashscope.aliyuncs.com`；Wan3 使用官方提供的业务空间域名。模型、Key、域名必须同地域，业务空间需匹配，提交和查询共用此配置。
+4. 保存凭据会发起真实 `qwen-plus` 聊天请求（max_tokens=8），可能收费；成功仅验证该聊天接口，不能证明图像/视频模型已开通。仅视频权限的 Key 或业务空间可能在这一步失败，不要据此断定 Key 无效。
+5. 先完成无凭据安装/注册检查；真实生成及异步查询按[最小验收指南](../docs/ACCEPTANCE.md)执行。模拟测试、打包成功均不代表真实部署成功。
 
 ## 使用方法
 

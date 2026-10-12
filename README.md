@@ -27,12 +27,13 @@ A powerful Dify plugin providing comprehensive AI-powered image and video genera
 
 ## Version Information
 
-- **Current Version**: v0.0.4
-- **Release Date**: 2026-07-05
+- **Current Version**: v0.0.5
+- **Merge Date**: 2026-10-03
 - **Compatibility**: Dify Plugin Framework
 - **Python Version**: 3.12
 
 ### Version History
+- **v0.0.5** (2026-10-03): Qwen-Image 3.0, Wan 3.0, Wan video editing and regional/workspace API host configuration.
 - **v0.0.4** (2026-07-05):
   - Added **HappyHorse 1.1** model for all HappyHorse video generation tools
   - Updated default model to happyhorse-1.1 for all HappyHorse features
@@ -242,15 +243,11 @@ Query image translation task status and results.
 
 ## Installation & Configuration
 
-1. Install the required dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Configure your Alibaba Cloud API credentials in the plugin settings:
-   - **API Key**: Your Alibaba Cloud DashScope API key
-
-3. Install the plugin in your Dify environment
+1. Obtain a trusted `tongyi_aigc-0.0.5.difypkg`, or package the source using the [acceptance guide](docs/ACCEPTANCE.md). Install from a local package on the Dify Plugins page. Dependencies are installed by the plugin runtime; running pip on the host does not install the plugin.
+2. Record Dify/plugin-daemon versions and architecture. The manifest uses Python 3.12 and supports amd64/arm64. No minimum Dify version is declared; compatibility with every version is not established. If signature verification fails, ask the administrator to use the instance's trusted signing policy.
+3. After installation, configure **API Key** and optional **api_base_url** (HTTPS host only, no path). Blank uses `https://dashscope.aliyuncs.com`; Wan3 requires the workspace host from official documentation. Model, key and host must share the region and correct workspace. Submission and polling use this same setting.
+4. Saving credentials sends a real `qwen-plus` chat request (max_tokens=8), which may incur charges. Success only validates that chat endpoint, not image/video permissions. A video-only key or workspace may fail this check without being invalid for video generation.
+5. Start with credential-free installation/registration checks, then follow the [minimum acceptance guide](docs/ACCEPTANCE.md) for generation and polling. Mock tests and successful packaging do not establish successful deployment.
 
 ## Usage
 

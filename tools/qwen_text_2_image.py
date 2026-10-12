@@ -186,8 +186,6 @@ class QwenText2ImageTool(Tool):
                 yield self.create_text_message("❌ API 响应中未返回图像数据")
                 return
 
-            yield self.create_text_message("🎉 图像生成成功！")
-
             image_index = 0
             for choice in choices:
                 for item in choice.get("message", {}).get("content", []):
@@ -198,6 +196,8 @@ class QwenText2ImageTool(Tool):
             if not image_index:
                 yield self.create_text_message("❌ API 响应中未返回图像URL")
                 return
+
+            yield self.create_text_message("🎉 图像生成成功！")
 
             usage = resp_data.get("usage", {})
             if usage:
