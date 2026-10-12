@@ -3,9 +3,9 @@ from urllib.parse import urlsplit
 
 
 def api_url(credentials, path):
-    host = str(credentials.get("api_base_url") or "https://dashscope.aliyuncs.com").rstrip("/")
+    host = str(credentials.get("api_base_url") or "https://dashscope.aliyuncs.com").strip().rstrip("/")
     parsed = urlsplit(host)
-    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+    if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.port not in (None, 443):
         raise ValueError("API Base URL must be an HTTPS host without credentials")
     if parsed.path or parsed.query or parsed.fragment:
         raise ValueError("API Base URL must not include a path, query or fragment")
